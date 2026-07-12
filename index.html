@@ -11,6 +11,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="introOverlay" class="intro-overlay">
+        <div class="intro-content">
+            <div class="intro-ring">
+                <i class="fab fa-tiktok intro-logo"></i>
+            </div>
+            <h2 class="intro-title">TikTok Downloader</h2>
+            <div class="intro-bar"><span class="intro-bar-fill"></span></div>
+            <p class="intro-sub">fungsinya mendownload VT tiktok tanpa perlu khawatir ada watermark pemilik video nya...</p>
+        </div>
+    </div>
+
     <div class="bg-orbs">
         <span class="orb orb-1"></span>
         <span class="orb orb-2"></span>
@@ -30,10 +41,11 @@
             <div class="search-box">
                 <i class="fas fa-link input-icon"></i>
                 <input type="text" id="tiktokUrl" placeholder="Tempel tautan video TikTok di sini...">
-                <button id="downloadBtn" onclick="processDownload()">
-                    <i class="fas fa-download"></i> Download
-                </button>
             </div>
+
+            <button id="downloadBtn" class="download-btn" onclick="processDownload()">
+                <i class="fas fa-download"></i> Download
+            </button>
 
             <div id="loading" class="loading" style="display: none;">
                 <div class="spinner"></div>
@@ -65,10 +77,10 @@
                         <span>Download Tanpa Watermark</span>
                         <i class="fas fa-arrow-down btn-arrow"></i>
                     </a>
-                    <a href="#" id="downloadWithWm" class="btn-download wm-yes" target="_blank">
-                        <i class="fas fa-video"></i>
-                        <span>Download Dengan Watermark</span>
-                        <i class="fas fa-arrow-down btn-arrow"></i>
+                    <a href="https://wa.me/6281235118138" id="whatsappBtn" class="btn-download wa-btn" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                        <i class="fas fa-arrow-right btn-arrow"></i>
                     </a>
                 </div>
             </div>
@@ -122,14 +134,11 @@
                 document.getElementById('videoAuthor').textContent = json.data.author ? '@' + json.data.author.nickname : '@author';
 
                 const noWm = document.getElementById('downloadNoWm');
-                const wm = document.getElementById('downloadWithWm');
 
                 noWm.href = noWmUrl;
-                wm.href = wmUrl;
 
                 // Mencegah membuka tab baru, lalu memicu unduhan file video
                 noWm.onclick = (e) => { e.preventDefault(); downloadVideo(noWmUrl, 'tiktok-no-watermark.mp4'); };
-                wm.onclick = (e) => { e.preventDefault(); downloadVideo(wmUrl, 'tiktok-watermark.mp4'); };
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
                 alert('Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
@@ -137,8 +146,22 @@
             }
         }
 
-        // Mengunduh video sebagai file menggunakan blob
+        // Deteksi perangkat iOS (iPhone, iPad, iPod)
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        // Mengunduh video sebagai file
         function downloadVideo(link, filename) {
+            // iOS Safari tidak mendukung unduhan blob via atribut download.
+            // Solusi: buka video di tab baru agar pengguna bisa menyimpan
+            // lewat long-press atau share sheet.
+            if (isIOS()) {
+                window.open(link, '_blank');
+                return;
+            }
+
             fetch(link)
                 .then(r => r.blob())
                 .then(blob => {
@@ -156,6 +179,17 @@
                     window.open(link, '_blank');
                 });
         }
+
+        // Overlay animasi pembuka selama 3 detik
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const overlay = document.getElementById('introOverlay');
+                if (overlay) {
+                    overlay.classList.add('intro-hidden');
+                    setTimeout(() => overlay.remove(), 700);
+                }
+            }, 3000);
+        });
     </script>
 </body>
 </html>
