@@ -80,6 +80,10 @@
                         <i class="fas fa-file-video"></i>
                         <span>Download Tanpa Watermark</span>
                     </a>
+                    <a href="#" id="downloadMp3" class="btn-download mp3-btn" target="_blank">
+                        <i class="fas fa-file-audio"></i>
+                        <span>Download MP3</span>
+                    </a>
                     <a href="mailto:latifsanjaya051@gmail.com" id="gmailBtn" class="btn-download gmail-btn" target="_blank" rel="noopener">
                         <i class="fas fa-envelope"></i>
                         <span>EMAIL BUSSINES</span>
@@ -117,6 +121,7 @@
 
                 const noWmUrl = json.data.play;
                 const wmUrl = json.data.wmplay || noWmUrl;
+                const mp3Url = json.data.music || '';
 
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('resultBox').style.display = 'block';
@@ -136,11 +141,20 @@
                 document.getElementById('videoAuthor').textContent = json.data.author ? '@' + json.data.author.nickname : '@author';
 
                 const noWm = document.getElementById('downloadNoWm');
+                const mp3 = document.getElementById('downloadMp3');
 
                 noWm.href = noWmUrl;
 
                 // Mencegah membuka tab baru, lalu memicu unduhan file video
                 noWm.onclick = (e) => { e.preventDefault(); downloadVideo(noWmUrl, 'tiktok-no-watermark.mp4'); };
+
+                if (mp3Url) {
+                    mp3.style.display = 'flex';
+                    mp3.href = mp3Url;
+                    mp3.onclick = (e) => { e.preventDefault(); downloadVideo(mp3Url, 'tiktok-audio.mp3'); };
+                } else {
+                    mp3.style.display = 'none';
+                }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
                 alert('Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
