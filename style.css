@@ -495,6 +495,16 @@ header p {
     box-shadow: 0 12px 28px rgba(234, 67, 53, 0.45);
 }
 
+.mp3-btn {
+    background: linear-gradient(135deg, #9b59b6, #6c3a8e);
+    box-shadow: 0 6px 18px rgba(155, 89, 182, 0.25);
+}
+
+.mp3-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(155, 89, 182, 0.45);
+}
+
 /* Footer */
 footer {
     margin-top: 38px;
