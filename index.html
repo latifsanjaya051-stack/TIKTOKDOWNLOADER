@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Video Downloader No Watermark</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-orbs">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-tiktok"></i>
+            </div>
+            <h1>TikTok Downloader</h1>
+            <p>Unduh video TikTok tanpa watermark dengan mudah dan cepat</p>
+        </header>
+
+        <main>
+            <div class="search-box">
+                <i class="fas fa-link input-icon"></i>
+                <input type="text" id="tiktokUrl" placeholder="Tempel tautan video TikTok di sini...">
+                <button id="downloadBtn" onclick="processDownload()">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Memproses video, mohon tunggu...</p>
+            </div>
+
+            <div id="resultBox" class="result-box" style="display: none;">
+                <div class="result-header">
+                    <i class="fas fa-circle-check success-icon"></i>
+                    <h3>Video Berhasil Diproses!</h3>
+                </div>
+
+                <div class="video-card">
+                    <div class="thumb-wrap">
+                        <img id="videoThumb" src="" alt="Thumbnail" style="display:none;">
+                        <div class="thumb-placeholder" id="thumbPlaceholder">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-meta">
+                        <p id="videoTitle" class="video-title">Video TikTok</p>
+                        <p id="videoAuthor" class="video-author">@author</p>
+                    </div>
+                </div>
+
+                <div class="download-links">
+                    <a href="#" id="downloadNoWm" class="btn-download wm-none" target="_blank">
+                        <i class="fas fa-file-video"></i>
+                        <span>Download Tanpa Watermark</span>
+                        <i class="fas fa-arrow-down btn-arrow"></i>
+                    </a>
+                    <a href="#" id="downloadWithWm" class="btn-download wm-yes" target="_blank">
+                        <i class="fas fa-video"></i>
+                        <span>Download Dengan Watermark</span>
+                        <i class="fas fa-arrow-down btn-arrow"></i>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; Developer Allatif. Layanan ini tidak berafiliasi dengan TikTok.</p>
+        </footer>
+    </div>
+
+    <script>
+        async function processDownload() {
+            const url = document.getElementById('tiktokUrl').value.trim();
+            if (!url) {
+                alert('Silakan tempel link TikTok terlebih dahulu!');
+                return;
+            }
+
+            // Menampilkan loading, menyembunyikan hasil sebelumnya
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultBox').style.display = 'none';
+
+            try {
+                // Mengambil URL video asli (tanpa & dengan watermark) dari API
+                const api = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url);
+                const res = await fetch(api);
+                const json = await res.json();
+
+                if (json.code !== 0 || !json.data || !json.data.play) {
+                    throw new Error('Video tidak ditemukan');
+                }
+
+                const noWmUrl = json.data.play;
+                const wmUrl = json.data.wmplay || noWmUrl;
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('resultBox').style.display = 'block';
+
+                // Menampilkan thumbnail & info video
+                const thumb = document.getElementById('videoThumb');
+                const placeholder = document.getElementById('thumbPlaceholder');
+                if (json.data.cover) {
+                    thumb.src = json.data.cover;
+                    thumb.style.display = 'block';
+                    placeholder.style.display = 'none';
+                } else {
+                    thumb.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                }
+                document.getElementById('videoTitle').textContent = json.data.title || 'Video TikTok';
+                document.getElementById('videoAuthor').textContent = json.data.author ? '@' + json.data.author.nickname : '@author';
+
+                const noWm = document.getElementById('downloadNoWm');
+                const wm = document.getElementById('downloadWithWm');
+
+                noWm.href = noWmUrl;
+                wm.href = wmUrl;
+
+                // Mencegah membuka tab baru, lalu memicu unduhan file video
+                noWm.onclick = (e) => { e.preventDefault(); downloadVideo(noWmUrl, 'tiktok-no-watermark.mp4'); };
+                wm.onclick = (e) => { e.preventDefault(); downloadVideo(wmUrl, 'tiktok-watermark.mp4'); };
+            } catch (err) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
+                console.error(err);
+            }
+        }
+
+        // Mengunduh video sebagai file menggunakan blob
+        function downloadVideo(link, filename) {
+            fetch(link)
+                .then(r => r.blob())
+                .then(blob => {
+                    const objUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = objUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(objUrl);
+                })
+                .catch(() => {
+                    // Fallback: buka di tab baru jika gagal diunduh langsung
+                    window.open(link, '_blank');
+                });
+        }
+    </script>
+</body>
+</html>
