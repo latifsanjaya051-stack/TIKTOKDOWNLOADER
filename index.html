@@ -30,7 +30,10 @@
         <span class="orb orb-1"></span>
         <span class="orb orb-2"></span>
         <span class="orb orb-3"></span>
+        <canvas id="particles"></canvas>
     </div>
+
+    <div class="cursor-glow"></div>
 
     <div class="container">
         <header>
@@ -39,12 +42,14 @@
             </div>
             <h1>TikTok Downloader</h1>
             <p>Unduh video TikTok tanpa watermark dengan mudah dan cepat</p>
+            <div class="status-badge"><span class="status-dot"></span> Layanan Aktif</div>
         </header>
 
         <main>
             <div class="search-box">
                 <i class="fas fa-link input-icon"></i>
                 <input type="text" id="tiktokUrl" placeholder="Tempel tautan video TikTok di sini...">
+                <button type="button" id="pasteBtn" class="input-action" title="Tempel dari clipboard"><i class="fas fa-paste"></i></button>
             </div>
 
             <button id="downloadBtn" class="download-btn" onclick="processDownload()">
@@ -97,11 +102,13 @@
         </footer>
     </div>
 
+    <div id="toastContainer" class="toast-container"></div>\n\n    <script src="script.js"></script>
     <script>
         async function processDownload() {
             const url = document.getElementById('tiktokUrl').value.trim();
             if (!url) {
-                alert('Silakan tempel link TikTok terlebih dahulu!');
+                if (window.showToast) showToast('Silakan tempel link TikTok terlebih dahulu!', 'error');
+                else alert('Silakan tempel link TikTok terlebih dahulu!');
                 return;
             }
 
@@ -125,6 +132,8 @@
 
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('resultBox').style.display = 'block';
+                if (window.launchConfetti) launchConfetti();
+                if (window.showToast) showToast('Video berhasil diproses!', 'success');
 
                 // Menampilkan thumbnail & info video
                 const thumb = document.getElementById('videoThumb');
@@ -157,7 +166,8 @@
                 }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                alert('Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
+                if (window.showToast) showToast('Gagal memproses video. Pastikan tautan valid.', 'error');
+                else alert('Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
                 console.error(err);
             }
         }
