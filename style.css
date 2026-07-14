@@ -3,20 +3,151 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
 }
 
 body {
     background: #0a0a14;
     color: #ffffff;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
     overflow-x: hidden;
     position: relative;
 }
+
+/* ===== Latar Galaxy Bergerak ===== */
+.sky-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Langit luar angkasa gelap keunguan */
+.galaxy-gradient {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(circle at 50% 40%, #2a1a5e 0%, #140a35 45%, #05030f 100%);
+    background-size: 100% 200%;
+    animation: galaxyShift 30s ease-in-out infinite;
+}
+
+@keyframes galaxyShift {
+    0%, 100% { background-position: 0% 0%; }
+    50% { background-position: 0% 100%; }
+}
+
+/* Bintang berkedip */
+.galaxy-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 28% 32%, #fff, transparent),
+        radial-gradient(1px 1px at 45% 12%, #fff, transparent),
+        radial-gradient(2px 2px at 63% 26%, #fff, transparent),
+        radial-gradient(1px 1px at 78% 16%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 88% 34%, #fff, transparent),
+        radial-gradient(1px 1px at 35% 8%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 70% 6%, #fff, transparent),
+        radial-gradient(1px 1px at 8% 60%, #cfe3ff, transparent),
+        radial-gradient(1.5px 1.5px at 92% 70%, #ffd6f5, transparent),
+        radial-gradient(1px 1px at 50% 80%, #fff, transparent),
+        radial-gradient(2px 2px at 20% 88%, #d9c6ff, transparent);
+    animation: twinkle 5s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.3; }
+}
+
+/* Awan nebula berwarna yang bergerak perlahan */
+.galaxy-nebula {
+    position: absolute;
+    inset: -30%;
+    background:
+        radial-gradient(40% 30% at 25% 30%, rgba(123, 47, 247, 0.35), transparent 70%),
+        radial-gradient(35% 28% at 75% 60%, rgba(37, 244, 238, 0.25), transparent 70%),
+        radial-gradient(45% 35% at 55% 80%, rgba(254, 44, 85, 0.22), transparent 70%);
+    filter: blur(40px);
+    animation: nebulaDrift 40s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaDrift {
+    0% { transform: translate(-3%, -2%) scale(1); }
+    100% { transform: translate(3%, 2%) scale(1.1); }
+}
+
+/* Galaksi spiral yang berputar */
+.galaxy-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 520px;
+    height: 520px;
+    margin: -260px 0 0 -260px;
+    animation: galaxyRotate 60s linear infinite;
+}
+
+.galaxy-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    margin: -45px 0 0 -45px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #fff 0%, #ffe9a8 35%, #ff9d4d 70%, rgba(255, 157, 77, 0) 100%);
+    box-shadow: 0 0 50px 18px rgba(255, 200, 120, 0.5);
+}
+
+.galaxy-arm {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 260px;
+    height: 260px;
+    margin: -130px 0 0 -130px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: rgba(255, 255, 255, 0.35);
+    border-right-color: rgba(123, 47, 247, 0.4);
+    transform-origin: 50% 50%;
+}
+
+.galaxy-arm-1 { transform: rotate(0deg); }
+.galaxy-arm-2 { transform: rotate(45deg); border-top-color: rgba(37, 244, 238, 0.35); border-right-color: rgba(37, 244, 238, 0.4); }
+.galaxy-arm-3 { transform: rotate(90deg); border-top-color: rgba(254, 44, 85, 0.3); border-right-color: rgba(254, 44, 85, 0.4); }
+.galaxy-arm-4 { transform: rotate(135deg); border-top-color: rgba(255, 255, 255, 0.3); border-right-color: rgba(123, 47, 247, 0.35); }
+
+@keyframes galaxyRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Bintang jatuh (shooting star) */
+.galaxy-shooting {
+    position: absolute;
+    top: 10%;
+    left: -10%;
+    width: 140px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff 60%, rgba(255, 255, 255, 0));
+    border-radius: 2px;
+    filter: drop-shadow(0 0 6px #fff);
+    opacity: 0;
+    animation: shooting 9s ease-in infinite;
+}
+
+@keyframes shooting {
+    0% { transform: translate(0, 0) rotate(18deg); opacity: 0; }
+    6% { opacity: 1; }
+    18% { transform: translate(70vw, 26vh) rotate(18deg); opacity: 0; }
+    100% { transform: translate(70vw, 26vh) rotate(18deg); opacity: 0; }
+}
+
+/* Pastikan orbs & konten tetap di atas galaxy */
+.bg-orbs { z-index: 1; }
 
 /* Overlay Animasi Pembuka */
 .intro-overlay {
@@ -180,137 +311,20 @@ body {
     66% { transform: translate(-30px, 40px) scale(0.95); }
 }
 
-.container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 540px;
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 28px;
-    padding: 48px 38px;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    text-align: center;
-}
+/* ===== Layout & responsivitas kini diatur oleh Tailwind CSS (lihat index.html) ===== */
+/* CSS ini hanya menyimpan animasi dekoratif yang tidak bisa diwakili utility. */
 
 /* Header */
-.logo {
-    width: 76px;
-    height: 76px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 22px;
-    font-size: 2.3rem;
-    background: linear-gradient(135deg, #25f4ee, #fe2c55);
-    box-shadow: 0 10px 30px rgba(254, 44, 85, 0.4);
-    animation: pulse 4s ease-in-out infinite;
-}
-
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
-}
-
-header h1 {
-    font-size: 2.3rem;
-    margin-bottom: 10px;
-    font-weight: 800;
-    letter-spacing: -0.8px;
-    background: linear-gradient(120deg, #ffffff 20%, #25f4ee 50%, #fe2c55 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% auto;
-    animation: shimmer 6s linear infinite;
 }
 
 @keyframes shimmer {
     to { background-position: 200% center; }
 }
 
-header p {
-    color: #aab2c5;
-    font-size: 1rem;
-    font-weight: 400;
-    margin-bottom: 34px;
-}
-
-/* Kotak Pencarian / Input */
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 7px 7px 7px 18px;
-    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
-}
-
-.search-box:focus-within {
-    border-color: rgba(37, 244, 238, 0.6);
-    box-shadow: 0 0 0 4px rgba(37, 244, 238, 0.12);
-    background: rgba(255, 255, 255, 0.07);
-}
-
-.input-icon {
-    color: #8a93a6;
-    font-size: 1.05rem;
-}
-
-.search-box input {
-    flex: 1;
-    padding: 15px 10px;
-    border: none;
-    background: transparent;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 500;
-    outline: none;
-}
-
-.search-box input::placeholder {
-    color: #6f7689;
-    font-weight: 400;
-}
-
-/* Tombol Download Terpisah */
-.download-btn {
-    width: 100%;
-    margin-top: 14px;
-    padding: 16px 28px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #fe2c55, #ff5e7e);
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
-}
-
-.download-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 26px rgba(254, 44, 85, 0.45);
-}
-
-.download-btn:active {
-    transform: translateY(0) scale(0.98);
-}
-
 /* Loading Spinner */
-.loading {
-    margin: 30px 0;
-}
-
 .spinner {
     width: 46px;
     height: 46px;
@@ -327,40 +341,8 @@ header p {
     100% { transform: rotate(360deg); }
 }
 
-/* Kotak Hasil */
-.result-box {
-    background: rgba(255, 255, 255, 0.04);
-    padding: 26px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    margin-top: 26px;
-    animation: fadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.result-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.result-header h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-}
-
-.success-icon {
-    color: #2ecc71;
-    font-size: 1.35rem;
-    filter: drop-shadow(0 0 8px rgba(46, 204, 113, 0.5));
-}
-
 /* Kartu Video */
 .video-card {
-    display: flex;
-    align-items: center;
     gap: 16px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -485,16 +467,6 @@ header p {
     box-shadow: 0 12px 28px rgba(0, 184, 148, 0.45);
 }
 
-.gmail-btn {
-    background: linear-gradient(135deg, #ea4335, #c5221f);
-    box-shadow: 0 6px 18px rgba(234, 67, 53, 0.25);
-}
-
-.gmail-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(234, 67, 53, 0.45);
-}
-
 .mp3-btn {
     background: linear-gradient(135deg, #9b59b6, #6c3a8e);
     box-shadow: 0 6px 18px rgba(155, 89, 182, 0.25);
@@ -513,13 +485,17 @@ footer {
     letter-spacing: 0.2px;
 }
 
-/* Animasi */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(16px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
 /* ============ ELEMEN INTERAKTIF BARU ============ */
+
+/* Kartu statistik kepercayaan */
+.stat-card {
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(37, 244, 238, 0.3);
+    background: rgba(255, 255, 255, 0.06);
+}
 
 /* Canvas partikel latar */
 #particles {
@@ -690,31 +666,4 @@ footer {
 
 .download-btn.btn-loading i {
     animation: spin 0.8s linear infinite;
-}
-
-/* Responsif Layar Kecil */
-@media (max-width: 480px) {
-    .container {
-        padding: 34px 22px;
-        border-radius: 22px;
-    }
-    .search-box {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 12px;
-    }
-    .search-box input {
-        padding: 12px 4px;
-    }
-    .download-btn {
-        width: 100%;
-    }
-    header h1 {
-        font-size: 1.85rem;
-    }
-    .logo {
-        width: 66px;
-        height: 66px;
-        font-size: 2rem;
-    }
 }
