@@ -111,17 +111,18 @@
     const urlInput = document.getElementById('tiktokUrl');
     if (pasteBtn && urlInput) {
         pasteBtn.addEventListener('click', async () => {
+            const T = (window.i18n && window.i18n[window.getLang ? window.getLang() : 'id']) || {};
             try {
                 const text = await navigator.clipboard.readText();
                 if (text) {
                     urlInput.value = text.trim();
                     urlInput.focus();
-                    showToast('Tautan berhasil ditempel!', 'success');
+                    showToast(T.pasted || 'Tautan berhasil ditempel!', 'success');
                 } else {
-                    showToast('Clipboard kosong.', 'info');
+                    showToast(T.emptyClip || 'Clipboard kosong.', 'info');
                 }
             } catch (err) {
-                showToast('Tidak dapat mengakses clipboard.', 'error');
+                showToast(T.noClip || 'Tidak dapat mengakses clipboard.', 'error');
             }
         });
     }
@@ -137,7 +138,7 @@
     }
 
     /* ---------- 7. Parallax tilt pada container ---------- */
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.app-container');
     if (container && window.matchMedia('(pointer:fine)').matches) {
         container.addEventListener('mousemove', (e) => {
             const rect = container.getBoundingClientRect();
@@ -186,4 +187,171 @@
             setTimeout(() => dlBtn.classList.remove('btn-loading'), 1500);
         });
     }
+
+    /* ---------- 11. Statistik / Counter kepercayaan ---------- */
+    const statDownloads = document.getElementById('statDownloads');
+    const statSatisfaction = document.getElementById('statSatisfaction');
+    const statSpeed = document.getElementById('statSpeed');
+
+    // Animasi hitung naik ke nilai target saat load
+    function animateCount(el, target, duration, decimals) {
+        if (!el) return;
+        const start = performance.now();
+        const from = 0;
+        function step(now) {
+            const p = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+            const val = from + (target - from) * eased;
+            el.textContent = val.toLocaleString('id-ID', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals,
+            });
+            if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    if (statDownloads) {
+        const target = parseInt(statDownloads.dataset.target, 10) || 0;
+        animateCount(statDownloads, target, 2000, 0);
+    }
+
+    // Update "real-time": total unduhan naik acak, kepuasan & kecepatan berfluktuasi
+    function tickStats() {
+        if (statDownloads) {
+            const cur = parseInt(statDownloads.textContent.replace(/\D/g, ''), 10) || 0;
+            statDownloads.textContent = (cur + Math.floor(Math.random() * 4) + 1)
+                .toLocaleString('id-ID');
+        }
+        if (statSatisfaction) {
+            const sat = 97.5 + Math.random() * 2.4; // 97.5 - 99.9
+            statSatisfaction.textContent = sat.toFixed(1);
+        }
+        if (statSpeed) {
+            const spd = 1.2 + Math.random() * 1.4; // 1.2s - 2.6s
+            statSpeed.textContent = spd.toFixed(1);
+        }
+    }
+    setInterval(tickStats, 3000);
+
+    /* ---------- 12. Jam & tanggal real-time ---------- */
+    const liveClock = document.getElementById('liveClock');
+    const liveDate = document.getElementById('liveDate');
+    function updateClock() {
+        if (!liveClock || !liveDate) return;
+        const now = new Date();
+        const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const date = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        liveClock.textContent = time;
+        liveDate.textContent = date;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /* ---------- 13. Pilihan bahasa ---------- */
+    const langBtn = document.getElementById('langBtn');
+    const langMenu = document.getElementById('langMenu');
+    const langLabel = document.getElementById('langLabel');
+    const langOptions = document.querySelectorAll('.lang-option');
+
+    const i18n = {
+        id: {
+            title: 'TikTok Downloader',
+            subtitle: 'Unduh video TikTok tanpa watermark dengan mudah dan cepat',
+            status: 'Layanan Aktif',
+            placeholder: 'Tempel tautan video TikTok di sini, contoh: https://vt.tiktok.com/...',
+            download: 'Download',
+            loading: 'Memproses video, mohon tunggu...',
+            successTitle: 'Video Berhasil Diproses!',
+            noWm: 'Download Tanpa Watermark',
+            mp3: 'Download MP3',
+            defaultTitle: 'Video TikTok',
+            defaultAuthor: '@author',
+            statDownloads: 'Total Unduhan',
+            statSatisfaction: 'Kepuasan',
+            statSpeed: 'Proses',
+            footer: 'Layanan ini tidak berafiliasi dengan TikTok.',
+            empty: 'Silakan tempel link TikTok terlebih dahulu!',
+            fail: 'Gagal memproses video. Pastikan tautan valid.',
+            ok: 'Video berhasil diproses!',
+            pasted: 'Tautan berhasil ditempel!',
+            emptyClip: 'Clipboard kosong.',
+            noClip: 'Tidak dapat mengakses clipboard.',
+        },
+        en: {
+            title: 'TikTok Downloader',
+            subtitle: 'Download TikTok videos without watermark easily and fast',
+            status: 'Service Active',
+            placeholder: 'Paste the TikTok video link here, e.g.: https://vt.tiktok.com/...',
+            download: 'Download',
+            loading: 'Processing video, please wait...',
+            successTitle: 'Video Processed Successfully!',
+            noWm: 'Download Without Watermark',
+            mp3: 'Download MP3',
+            defaultTitle: 'TikTok Video',
+            defaultAuthor: '@author',
+            statDownloads: 'Total Downloads',
+            statSatisfaction: 'Satisfaction',
+            statSpeed: 'Process',
+            footer: 'This service is not affiliated with TikTok.',
+            empty: 'Please paste the TikTok link first!',
+            fail: 'Failed to process video. Make sure the link is valid.',
+            ok: 'Video processed successfully!',
+            pasted: 'Link pasted successfully!',
+            emptyClip: 'Clipboard is empty.',
+            noClip: 'Unable to access clipboard.',
+        },
+    };
+
+    function applyLang(lang) {
+        const t = i18n[lang];
+        if (!t) return;
+        const set = (sel, text) => { const el = document.querySelector(sel); if (el) el.textContent = text; };
+        set('header h1', t.title);
+        set('header p', t.subtitle);
+        set('#statusText', t.status);
+        const input = document.getElementById('tiktokUrl');
+        if (input) input.placeholder = t.placeholder;
+        set('#downloadBtnText', t.download);
+        set('#loading p', t.loading);
+        set('.result-header h3', t.successTitle);
+        set('#downloadNoWm span', t.noWm);
+        set('#downloadMp3 span', t.mp3);
+        set('#videoTitle', t.defaultTitle);
+        set('#videoAuthor', t.defaultAuthor);
+        const labels = document.querySelectorAll('.stat-label');
+        if (labels[0]) labels[0].textContent = t.statDownloads;
+        if (labels[1]) labels[1].textContent = t.statSatisfaction;
+        if (labels[2]) labels[2].textContent = t.statSpeed;
+        const foot = document.querySelector('footer p');
+        if (foot) foot.textContent = '© Dev Muhammad Allatif. ' + t.footer;
+        if (langLabel) langLabel.textContent = lang.toUpperCase();
+        // simpan ke localStorage
+        try { localStorage.setItem('siteLang', lang); } catch (e) {}
+    }
+
+    if (langBtn && langMenu) {
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langMenu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => langMenu.classList.add('hidden'));
+        langMenu.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    langOptions.forEach((opt) => {
+        opt.addEventListener('click', () => {
+            applyLang(opt.dataset.lang);
+            langMenu.classList.add('hidden');
+        });
+    });
+
+    // muat bahasa tersimpan (default id)
+    let savedLang = 'id';
+    try { savedLang = localStorage.getItem('siteLang') || 'id'; } catch (e) {}
+    applyLang(savedLang);
+
+    // ekspos ke global agar script inline bisa pakai terjemahan
+    window.i18n = i18n;
+    window.getLang = () => (document.getElementById('langLabel') || {}).textContent?.toLowerCase() || 'id';
 })();
