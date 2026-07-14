@@ -7,10 +7,61 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        tiktokCyan: '#25f4ee',
+                        tiktokRed: '#fe2c55',
+                        tiktokPurple: '#7b2ff7',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Segoe UI', 'sans-serif'],
+                    },
+                    keyframes: {
+                        shimmerText: { to: { backgroundPosition: '200% center' } },
+                        pulseScale: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
+                        },
+                        fadeInUp: {
+                            from: { opacity: 0, transform: 'translateY(16px) scale(0.98)' },
+                            to: { opacity: 1, transform: 'translateY(0) scale(1)' },
+                        },
+                    },
+                    animation: {
+                        'shimmer-text': 'shimmerText 6s linear infinite',
+                        'pulse-slow': 'pulseScale 4s ease-in-out infinite',
+                        'fade-in': 'fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'spin-slow': 'spin 4s linear infinite',
+                    },
+                },
+            },
+        };
+    </script>
 </head>
-<body>
+<body class="font-sans min-h-screen flex items-center justify-center">
+    <!-- Latar galaxy yang terus bergerak -->
+    <div class="sky-bg" aria-hidden="true">
+        <div class="galaxy-gradient"></div>
+        <div class="galaxy-stars"></div>
+        <div class="galaxy-nebula"></div>
+        <div class="galaxy-spin">
+            <div class="galaxy-core"></div>
+            <div class="galaxy-arm galaxy-arm-1"></div>
+            <div class="galaxy-arm galaxy-arm-2"></div>
+            <div class="galaxy-arm galaxy-arm-3"></div>
+            <div class="galaxy-arm galaxy-arm-4"></div>
+        </div>
+        <div class="galaxy-shooting"></div>
+    </div>
+
     <div id="introOverlay" class="intro-overlay">
         <div class="intro-content">
             <div class="intro-ring">
@@ -35,70 +86,106 @@
 
     <div class="cursor-glow"></div>
 
-    <div class="container">
+    <div class="app-container relative z-10 mx-auto w-full max-w-[540px] rounded-[28px] border border-white/10 bg-white/[0.04] p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-[24px] backdrop-saturate-[1.6] sm:p-10">
+        <!-- Pilihan Bahasa (pojok kanan atas) -->
+        <div class="absolute right-4 top-4 z-20">
+            <button type="button" id="langBtn" class="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#aab2c5] transition hover:bg-white/10 hover:text-white" title="Pilih Bahasa">
+                <i class="fas fa-globe text-[#25f4ee]"></i>
+                <span id="langLabel">ID</span>
+                <i class="fas fa-chevron-down text-[0.6rem]"></i>
+            </button>
+            <div id="langMenu" class="absolute right-0 mt-2 hidden w-32 overflow-hidden rounded-xl border border-white/10 bg-[#14142a]/95 text-left shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <button type="button" class="lang-option flex w-full items-center gap-2 px-3 py-2.5 text-sm text-white transition hover:bg-white/10" data-lang="id"><span class="text-base">🇮🇩</span> Indonesia</button>
+                <button type="button" class="lang-option flex w-full items-center gap-2 px-3 py-2.5 text-sm text-white transition hover:bg-white/10" data-lang="en"><span class="text-base">🇬🇧</span> English</button>
+            </div>
+        </div>
+
         <header>
-            <div class="logo">
+            <div class="logo mx-auto mb-5 flex h-[66px] w-[66px] items-center justify-center rounded-[22px] bg-gradient-to-br from-[#25f4ee] to-[#fe2c55] text-2xl shadow-[0_10px_30px_rgba(254,44,85,0.4)] animate-pulse-slow sm:h-[76px] sm:w-[76px] sm:text-[2.3rem]">
                 <i class="fab fa-tiktok"></i>
             </div>
-            <h1>TikTok Downloader</h1>
-            <p>Unduh video TikTok tanpa watermark dengan mudah dan cepat</p>
-            <div class="status-badge"><span class="status-dot"></span> Layanan Aktif</div>
+            <h1 class="mb-2.5 bg-gradient-to-r from-white via-[#25f4ee] to-[#fe2c55] bg-[length:200%_auto] bg-clip-text text-3xl font-extrabold tracking-tight text-transparent animate-shimmer-text sm:text-4xl">TikTok Downloader</h1>
+            <p class="mb-8 text-base font-normal text-[#aab2c5]">Unduh video TikTok tanpa watermark dengan mudah dan cepat</p>
+            <div class="status-badge mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#aab2c5]">
+                <span class="status-dot h-2 w-2 rounded-full bg-[#2ecc71]"></span>
+                <i class="fab fa-android text-[#3DDC84] animate-spin-slow"></i> <span id="statusText">Layanan Aktif</span>
+            </div>
+
+            <!-- Statistik / Counter Kepercayaan -->
+            <div class="stats-grid mb-8 grid grid-cols-3 gap-3">
+                <div class="stat-card rounded-2xl border border-white/10 bg-white/[0.04] px-2 py-4">
+                    <div class="stat-value text-xl font-extrabold text-white sm:text-2xl" id="statDownloads" data-target="128450" data-suffix="">0</div>
+                    <div class="stat-label mt-1 text-[0.7rem] font-medium uppercase tracking-wide text-[#8a93a6]">Total Unduhan</div>
+                </div>
+                <div class="stat-card rounded-2xl border border-white/10 bg-white/[0.04] px-2 py-4">
+                    <div class="stat-value text-xl font-extrabold text-[#2ecc71] sm:text-2xl"><span id="statSatisfaction">98.7</span>%</div>
+                    <div class="stat-label mt-1 text-[0.7rem] font-medium uppercase tracking-wide text-[#8a93a6]">Kepuasan</div>
+                </div>
+                <div class="stat-card rounded-2xl border border-white/10 bg-white/[0.04] px-2 py-4">
+                    <div class="stat-value text-xl font-extrabold text-[#25f4ee] sm:text-2xl"><span id="statSpeed">1.8</span>s</div>
+                    <div class="stat-label mt-1 text-[0.7rem] font-medium uppercase tracking-wide text-[#8a93a6]">Proses</div>
+                </div>
+            </div>
+
+            <!-- Jam & Tanggal Real-time -->
+            <div class="clock-bar mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-medium text-[#aab2c5]">
+                <i class="far fa-clock text-[#25f4ee]"></i>
+                <span id="liveClock" class="tabular-nums text-white">--:--:--</span>
+                <span class="text-white/30">|</span>
+                <span id="liveDate" class="text-[#aab2c5]">--</span>
+            </div>
         </header>
 
         <main>
-            <div class="search-box">
-                <i class="fas fa-link input-icon"></i>
-                <input type="text" id="tiktokUrl" placeholder="Tempel tautan video TikTok di sini...">
-                <button type="button" id="pasteBtn" class="input-action" title="Tempel dari clipboard"><i class="fas fa-paste"></i></button>
+            <div class="search-box flex flex-col gap-3 rounded-2xl border-[1.5px] border-white/[0.12] bg-white/5 p-3 transition focus-within:border-[#25f4ee]/60 focus-within:bg-white/[0.07] focus-within:shadow-[0_0_0_4px_rgba(37,244,238,0.12)] sm:flex-row sm:gap-2.5 sm:p-1.5 sm:pl-4">
+                <i class="fas fa-link input-icon hidden text-[#8a93a6] sm:block sm:order-1 sm:text-[1.05rem]"></i>
+                <input type="text" id="tiktokUrl" class="order-1 flex-1 bg-transparent px-1 py-3 text-base font-medium text-white outline-none placeholder:text-[#6f7689] sm:order-2 sm:px-2.5 sm:py-3.5" placeholder="Tempel tautan video TikTok di sini, contoh: https://vt.tiktok.com/...">
+                <button type="button" id="pasteBtn" class="input-action order-2 flex h-[42px] w-full shrink-0 items-center justify-center rounded-xl bg-[#25f4ee]/10 text-[#25f4ee] transition hover:scale-105 hover:bg-[#25f4ee]/20 active:scale-95 sm:order-3 sm:w-[42px]" title="Tempel dari clipboard"><i class="fas fa-paste"></i></button>
             </div>
 
-            <button id="downloadBtn" class="download-btn" onclick="processDownload()">
-                <i class="fas fa-download"></i> Download
+            <button id="downloadBtn" class="download-btn relative mt-3.5 flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-br from-[#fe2c55] to-[#ff5e7e] px-7 py-4 text-base font-bold text-white transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_10px_26px_rgba(254,44,85,0.45)] active:scale-95 active:translate-y-0" onclick="processDownload()">
+                <i class="fas fa-download"></i> <span id="downloadBtnText">Download</span>
             </button>
 
-            <div id="loading" class="loading" style="display: none;">
+            <div id="loading" class="loading my-8 hidden">
                 <div class="spinner"></div>
-                <p>Memproses video, mohon tunggu...</p>
+                <p class="text-[#aab2c5]">Memproses video, mohon tunggu...</p>
             </div>
 
-            <div id="resultBox" class="result-box" style="display: none;">
-                <div class="result-header">
-                    <i class="fas fa-circle-check success-icon"></i>
-                    <h3>Video Berhasil Diproses!</h3>
+            <div id="resultBox" class="result-box relative mt-6 hidden animate-fade-in rounded-2xl border border-white/[0.09] bg-white/[0.04] p-[26px]">
+                <div class="result-header mb-5 flex items-center justify-center gap-2.5">
+                    <i class="fas fa-circle-check success-icon text-xl text-[#2ecc71] drop-shadow-[0_0_8px_rgba(46,204,113,0.5)]"></i>
+                    <h3 class="text-xl font-bold tracking-tight">Video Berhasil Diproses!</h3>
                 </div>
 
-                <div class="video-card">
-                    <div class="thumb-wrap">
-                        <img id="videoThumb" src="" alt="Thumbnail" style="display:none;">
-                        <div class="thumb-placeholder" id="thumbPlaceholder">
+                <div class="video-card mb-[22px] flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-3.5 transition hover:border-[#25f4ee]/30 hover:bg-white/[0.06]">
+                    <div class="thumb-wrap relative h-[88px] w-[88px] shrink-0 overflow-hidden rounded-xl bg-black/40 shadow-[0_4px_14px_rgba(0,0,0,0.3)]">
+                        <img id="videoThumb" src="" alt="Thumbnail" class="hidden h-full w-full object-cover">
+                        <div class="thumb-placeholder flex h-full w-full items-center justify-center text-[1.7rem] text-[#8a93a6]" id="thumbPlaceholder">
                             <i class="fas fa-play"></i>
                         </div>
                     </div>
-                    <div class="video-meta">
-                        <p id="videoTitle" class="video-title">Video TikTok</p>
-                        <p id="videoAuthor" class="video-author">@author</p>
+                    <div class="video-meta min-w-0 flex-1 text-left">
+                        <p id="videoTitle" class="video-title mb-1.5 line-clamp-2 text-[0.98rem] font-semibold leading-snug">Video TikTok</p>
+                        <p id="videoAuthor" class="video-author text-sm font-semibold text-[#25f4ee]">@author</p>
                     </div>
                 </div>
 
-                <div class="download-links">
-                    <a href="#" id="downloadNoWm" class="btn-download wm-none" target="_blank">
+                <div class="download-links flex flex-col gap-3.5">
+                    <a href="#" id="downloadNoWm" class="btn-download wm-none relative flex items-center gap-3.5 overflow-hidden rounded-xl px-5 py-4 text-[0.97rem] font-semibold text-white transition hover:-translate-y-0.5" target="_blank">
                         <i class="fas fa-file-video"></i>
-                        <span>Download Tanpa Watermark</span>
+                        <span class="flex-1 text-center">Download Tanpa Watermark</span>
                     </a>
-                    <a href="#" id="downloadMp3" class="btn-download mp3-btn" target="_blank">
+                    <a href="#" id="downloadMp3" class="btn-download mp3-btn relative flex items-center gap-3.5 overflow-hidden rounded-xl px-5 py-4 text-[0.97rem] font-semibold text-white transition hover:-translate-y-0.5" target="_blank">
                         <i class="fas fa-file-audio"></i>
-                        <span>Download MP3</span>
-                    </a>
-                    <a href="mailto:latifsanjaya051@gmail.com" id="gmailBtn" class="btn-download gmail-btn" target="_blank" rel="noopener">
-                        <i class="fas fa-envelope"></i>
-                        <span>EMAIL BUSSINES</span>
+                        <span class="flex-1 text-center">Download MP3</span>
                     </a>
                 </div>
             </div>
         </main>
 
-        <footer>
-            <p>&copy; Developer Allatif. Layanan ini tidak berafiliasi dengan TikTok.</p>
+        <footer class="mt-9 text-xs tracking-wide text-[#5b6275]">
+            <p>&copy; Dev Muhammad Allatif. Layanan ini tidak berafiliasi dengan TikTok.</p>
         </footer>
     </div>
 
@@ -106,9 +193,10 @@
     <script>
         async function processDownload() {
             const url = document.getElementById('tiktokUrl').value.trim();
+            const T = (window.i18n && window.i18n[window.getLang ? window.getLang() : 'id']) || {};
             if (!url) {
-                if (window.showToast) showToast('Silakan tempel link TikTok terlebih dahulu!', 'error');
-                else alert('Silakan tempel link TikTok terlebih dahulu!');
+                if (window.showToast) showToast(T.empty || 'Silakan tempel link TikTok terlebih dahulu!', 'error');
+                else alert(T.empty || 'Silakan tempel link TikTok terlebih dahulu!');
                 return;
             }
 
@@ -133,7 +221,7 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('resultBox').style.display = 'block';
                 if (window.launchConfetti) launchConfetti();
-                if (window.showToast) showToast('Video berhasil diproses!', 'success');
+                if (window.showToast) showToast(T.ok || 'Video berhasil diproses!', 'success');
 
                 // Menampilkan thumbnail & info video
                 const thumb = document.getElementById('videoThumb');
@@ -146,8 +234,8 @@
                     thumb.style.display = 'none';
                     placeholder.style.display = 'flex';
                 }
-                document.getElementById('videoTitle').textContent = json.data.title || 'Video TikTok';
-                document.getElementById('videoAuthor').textContent = json.data.author ? '@' + json.data.author.nickname : '@author';
+                document.getElementById('videoTitle').textContent = json.data.title || (T.defaultTitle || 'Video TikTok');
+                document.getElementById('videoAuthor').textContent = json.data.author ? '@' + json.data.author.nickname : (T.defaultAuthor || '@author');
 
                 const noWm = document.getElementById('downloadNoWm');
                 const mp3 = document.getElementById('downloadMp3');
@@ -166,8 +254,8 @@
                 }
             } catch (err) {
                 document.getElementById('loading').style.display = 'none';
-                if (window.showToast) showToast('Gagal memproses video. Pastikan tautan valid.', 'error');
-                else alert('Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
+                if (window.showToast) showToast(T.fail || 'Gagal memproses video. Pastikan tautan valid.', 'error');
+                else alert(T.fail || 'Gagal memproses video. Pastikan tautan TikTok valid dan coba lagi.');
                 console.error(err);
             }
         }
