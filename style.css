@@ -13,6 +13,38 @@ body {
     position: relative;
 }
 
+/* ===== Paksa container selalu full-width & terpusat =====
+   (override Tailwind Play CDN agar tidak menempel ke kiri di mode HP) */
+body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
+.app-container {
+    width: 100% !important;
+    max-width: 540px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+@media (min-width: 640px) {
+    body {
+        justify-content: center !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app-container {
+        max-width: 580px !important;
+    }
+}
+
 /* ===== Latar Galaxy Bergerak ===== */
 .sky-bg {
     position: fixed;
@@ -666,4 +698,136 @@ footer {
 
 .download-btn.btn-loading i {
     animation: spin 0.8s linear infinite;
+}
+
+/* ============================================================
+   RESPONSIVITAS — penyesuaian untuk HP & layar kecil
+   ============================================================ */
+
+/* Layar sangat kecil (HP < 380px) */
+@media (max-width: 380px) {
+    .app-container {
+        border-radius: 20px;
+        padding: 18px 14px;
+    }
+
+    .stats-grid {
+        gap: 6px;
+    }
+
+    .stat-card {
+        padding: 10px 4px;
+    }
+
+    .stat-label {
+        font-size: 0.6rem;
+    }
+
+    .clock-bar {
+        font-size: 0.78rem;
+        padding: 6px 12px;
+    }
+
+    .video-card {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .thumb-wrap {
+        width: 56px;
+        height: 56px;
+    }
+
+    .video-title {
+        font-size: 0.88rem;
+    }
+
+    .video-author {
+        font-size: 0.78rem;
+    }
+
+    .btn-download {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+        gap: 10px;
+    }
+
+    .intro-title {
+        font-size: 1.25rem;
+    }
+
+    .intro-bar {
+        width: 170px;
+    }
+
+    .intro-ring {
+        width: 92px;
+        height: 92px;
+    }
+
+    .intro-logo {
+        width: 2.8rem;
+        height: 2.8rem;
+    }
+}
+
+/* Skala dekorasi latar agar tidak membebani layar kecil */
+@media (max-width: 640px) {
+    .galaxy-spin {
+        width: 360px;
+        height: 360px;
+        margin: -180px 0 0 -180px;
+    }
+
+    .galaxy-core {
+        width: 64px;
+        height: 64px;
+        margin: -32px 0 0 -32px;
+    }
+
+    .galaxy-arm {
+        width: 180px;
+        height: 180px;
+        margin: -90px 0 0 -90px;
+    }
+
+    .orb-1 { width: 280px; height: 280px; }
+    .orb-2 { width: 260px; height: 260px; }
+    .orb-3 { width: 200px; height: 200px; }
+
+    .cursor-glow {
+        display: none;
+    }
+}
+
+/* Orientasi landscape pada HP (tinggi terbatas) */
+@media (max-height: 520px) and (orientation: landscape) {
+    body {
+        align-items: flex-start;
+    }
+
+    .app-container {
+        margin: 12px auto;
+    }
+
+    .logo {
+        margin-bottom: 12px;
+    }
+
+    .stats-grid,
+    .clock-bar,
+    .status-badge {
+        margin-bottom: 14px;
+    }
+
+    .intro-content {
+        gap: 14px;
+    }
+}
+
+/* Layar besar / desktop lebar */
+@media (min-width: 1024px) {
+    .app-container {
+        max-width: 580px;
+    }
 }
