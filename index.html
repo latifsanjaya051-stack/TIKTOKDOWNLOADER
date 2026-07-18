@@ -47,6 +47,11 @@
     </script>
 </head>
 <body class="font-sans min-h-screen flex flex-col items-center justify-start px-3 py-6 sm:justify-center sm:px-4 sm:py-10">
+    <!-- Video latar penuh (di belakang semua konten) -->
+    <video class="bg-video" autoplay muted loop playsinline aria-hidden="true">
+        <source src="IMG_5593.MP4" type="video/mp4">
+    </video>
+
     <!-- Latar galaxy yang terus bergerak -->
     <div class="sky-bg" aria-hidden="true">
         <div class="galaxy-gradient"></div>
@@ -86,7 +91,7 @@
 
     <div class="cursor-glow"></div>
 
-    <div class="app-container relative z-10 mx-auto w-full max-w-[540px] rounded-[28px] border border-white/10 bg-white/[0.04] p-5 text-center shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-[24px] backdrop-saturate-[1.6] sm:p-8 lg:max-w-[580px] lg:p-10">
+    <div class="app-container relative z-10 mx-auto w-full max-w-[540px] rounded-[28px] border border-white/10 bg-white/[0.02] p-5 text-center shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-[6px] backdrop-saturate-[1.2] sm:p-8 lg:max-w-[580px] lg:p-10">
         <!-- Pilihan Bahasa (pojok kanan atas) -->
         <div class="absolute right-4 top-4 z-20">
             <button type="button" id="langBtn" class="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#aab2c5] transition hover:bg-white/10 hover:text-white" title="Pilih Bahasa">
